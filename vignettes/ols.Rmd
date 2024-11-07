@@ -1,0 +1,60 @@
+---
+title: "OLS estimation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ols}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Here we check beyond the unit tests.
+
+```{r setup}
+library(dummypackage)
+```
+
+For example, the OLS estimator is $\hat{\beta} = (X'X)^{-1}X'Y$.
+
+Let's define the model
+
+$$
+\text{mpg}_i = \beta_0 + \beta_1 \text{wt}_i + \beta_2 \text{hp}_i + \epsilon_i
+$$
+
+Is our computation consistent with that?
+
+A manual computation of the OLS estimator is as follows:
+
+```{r}
+y <- mtcars_mat$y
+X <- mtcars_mat$x[, c("wt", "hp")]
+X <- cbind(1, X)
+
+XtX <- crossprod(X)
+
+dim(XtX)
+
+XtY <- crossprod(X, y)
+
+dim(XtY)
+
+beta_hat <- solve(XtX) %*% XtY
+
+beta_hat
+```
+
+The functions implemented in the package are:
+
+```{r}
+ols_mat(y, X)
+ols_dbl(y, X)
+```
+
+These differ only about the data type of the output.
